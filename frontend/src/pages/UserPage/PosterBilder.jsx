@@ -8,6 +8,9 @@ import { useNavigate } from "react-router-dom";
 const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder }) => {
     const [posterItems, setPosterItems] = useState([]);
 
+    console.log(selectedProducts)
+    console.log(posterItems)
+
     const navigate = useNavigate();
 
     const handleDragStart = (e, product) => {
@@ -26,7 +29,7 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
         const alreadyAdded = posterItems.some(
             (item) =>
-                item.id === product.id &&
+                item._id === product._id &&
                 item.category === product.category
         );
 
@@ -52,7 +55,7 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
             prev.filter(
                 (item) =>
                     !(
-                        item.id === product.id &&
+                        item._id === product._id &&
                         item.category === product.category
                     )
             )
@@ -107,7 +110,7 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
                 {posterItems.map((product) => (
                     <Rnd
-                        key={`${product.category}-${product.id}`}
+                        key={`${product.category}-${product._id}`}
                         bounds="parent"
                         size={{
                             width: 150,
@@ -120,7 +123,7 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
                         onDragStop={(e, d) => {
                             setPosterItems((prev) =>
                                 prev.map((item) =>
-                                    item.id === product.id &&
+                                    item._id === product._id &&
                                         item.category === product.category
                                         ? {
                                             ...item,
@@ -183,13 +186,13 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
                         const isOnPoster = posterItems.some(
                             (item) =>
-                                item.id === product.id &&
+                                item._id === product._id &&
                                 item.category === product.category
                         );
 
                         return (
                             <div
-                                key={`${product.category}-${product.id}`}
+                                key={`${product.category}-${product._id}`}
                                 draggable={!isOnPoster}
                                 onDragStart={(e) =>
                                     handleDragStart(e, product)
