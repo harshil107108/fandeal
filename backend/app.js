@@ -178,7 +178,6 @@ app.put("/poster/updateStatus", async (req, res) => {
 app.post("/poster/addEdit", async (req, res) => {
     try {
         const {
-            userId,
             items,
             status,
             isLocked,
@@ -186,7 +185,6 @@ app.post("/poster/addEdit", async (req, res) => {
         } = req.body;
 
         const posterData = {
-            // userId,
             items,
             status: status || "pending",
             isLocked: isLocked || false,
