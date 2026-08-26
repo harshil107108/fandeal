@@ -5,6 +5,7 @@ import bg from "../../assets/bg.jpg";
 const Poster = () => {
     const [posterData, setPosterData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [refreshkey, setRefreshkey] = useState(1)
 
     const getPosterData = async () => {
         try {
@@ -23,7 +24,6 @@ const Poster = () => {
 
         } catch (error) {
 
-            // No poster is not a real error for UI
             if (error.response?.status === 404) {
                 setPosterData(null);
             } else {
@@ -44,8 +44,9 @@ const Poster = () => {
                 }
             );
 
-            // Immediately remove poster from UI
+
             setPosterData(null);
+            setRefreshkey(refreshkey + 1)
 
         } catch (error) {
             console.error(
@@ -57,11 +58,9 @@ const Poster = () => {
 
     useEffect(() => {
         getPosterData();
-    }, []);
+    }, [refreshkey]);
 
-    // =========================
-    // LOADING
-    // =========================
+
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
@@ -72,9 +71,7 @@ const Poster = () => {
         );
     }
 
-    // =========================
-    // NO POSTER
-    // =========================
+    
     if (!posterData) {
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -122,7 +119,7 @@ const Poster = () => {
 
             <div className="max-w-6xl mx-auto">
 
-                {/* Poster */}
+               
                 <div
                     className="
                         relative
@@ -138,7 +135,6 @@ const Poster = () => {
                     "
                 >
 
-                    {/* Background */}
                     <img
                         src={bg}
                         alt="Poster Background"
@@ -151,7 +147,7 @@ const Poster = () => {
                         "
                     />
 
-                    {/* Status */}
+                   
                     <div
                         className={`
                             absolute
@@ -176,7 +172,7 @@ const Poster = () => {
                         {posterData.status}
                     </div>
 
-                    {/* Products */}
+                    
                     {posterData.items?.map((item) => {
 
                         const product = item.productId;

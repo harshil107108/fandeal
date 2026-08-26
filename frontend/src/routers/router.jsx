@@ -15,9 +15,7 @@ import Signup from "../pages/UserPage/Auth/Signup";
 import ProtectedRoute from "../routers/ProtectedRoute";
 
 export const router = createBrowserRouter([
-    // =========================
-    // PUBLIC AUTH ROUTES
-    // =========================
+
     {
         path: "/login",
         element: <Login />,
@@ -27,9 +25,7 @@ export const router = createBrowserRouter([
         element: <Signup />,
     },
 
-    // =========================
-    // ADMIN ROUTES - NO PROTECTION
-    // =========================
+
     {
         path: "/admin",
         element: <MainPage />,
@@ -49,9 +45,6 @@ export const router = createBrowserRouter([
         ],
     },
 
-    // =========================
-    // USER ROUTES - PROTECTED
-    // =========================
     {
         element: <ProtectedRoute />,
         children: [
