@@ -64,10 +64,7 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
     const handleSave = async () => {
         try {
-            const token = localStorage.getItem("token");
-
             const posterData = {
-                userId: token,
                 items: posterItems.map((product) => ({
                     productId: product._id,
                     x: product.x,
@@ -81,7 +78,12 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
             const response = await axios.post(
                 "http://localhost:8080/poster/addEdit",
-                posterData
+                posterData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
+                }
             );
 
             setSelectedProducts([]);

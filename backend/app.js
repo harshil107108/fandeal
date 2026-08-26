@@ -8,11 +8,36 @@ const PosterModal = require("./modals/Poster")
 const upload = require("./config/multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const JWT_SECRET = "secretkey";
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use("/uploads", express.static("uploads"));
+
+const requireAuth = (req, res, next) => {
+    const authorization = req.headers.authorization;
+    const token = authorization?.startsWith("Bearer ")
+        ? authorization.slice(7)
+        : null;
+
+    if (!token) {
+        return res.status(401).json({
+            success: false,
+            message: "Authentication required",
+        });
+    }
+
+    try {
+        req.user = jwt.verify(token, JWT_SECRET);
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            success: false,
+            message: "Invalid or expired token",
+        });
+    }
+};
 
 mongoose
     .connect("mongodb://127.0.0.1:27017/fandeal")
@@ -88,13 +113,12 @@ app.post("/product/getProductData", async (req, res) => {
 
 app.post("/auth/signup", async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { email, password } = req.body;
 
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const userData = {
-            name,
             email,
             password: hashedPassword,
         };
@@ -106,7 +130,6 @@ app.post("/auth/signup", async (req, res) => {
             message: "User added successfully",
             data: {
                 id: user._id,
-                name: user.name,
                 email: user.email,
             },
         });
@@ -175,7 +198,7 @@ app.put("/poster/updateStatus", async (req, res) => {
     }
 });
 
-app.post("/poster/addEdit", async (req, res) => {
+app.post("/poster/addEdit", requireAuth, async (req, res) => {
     try {
         const {
             items,
@@ -185,6 +208,7 @@ app.post("/poster/addEdit", async (req, res) => {
         } = req.body;
 
         const posterData = {
+            userId: req.user.userId,
             items,
             status: status || "pending",
             isLocked: isLocked || false,
@@ -210,11 +234,12 @@ app.post("/poster/addEdit", async (req, res) => {
     }
 });
 
-app.get("/poster/getPosterData", async (req, res) => {
+app.get("/poster/getPosterData", requireAuth, async (req, res) => {
     try {
         const poster = await PosterModal
-            .findOne({})
-            .populate("items.productId");
+            .findOne({ userId: req.user.userId })
+            .populate("items.productId")
+            .populate("userId", "email");
 
         if (!poster) {
             return res.status(404).json({
@@ -244,7 +269,8 @@ app.get("/poster/getAllPosterData", async (req, res) => {
     try {
         const poster = await PosterModal
             .find()
-            .populate("items.productId");
+            .populate("items.productId")
+            .populate("userId", "email");
 
         if (!poster) {
             return res.status(404).json({
@@ -270,7 +296,7 @@ app.get("/poster/getAllPosterData", async (req, res) => {
 });
 
 
-app.post("/poster/delete", async (req, res) => {
+app.post("/poster/delete", requireAuth, async (req, res) => {
     try {
         const { id } = req.body;
 
@@ -281,7 +307,10 @@ app.post("/poster/delete", async (req, res) => {
             });
         }
 
-        const poster = await PosterModal.findByIdAndDelete(id);
+        const poster = await PosterModal.findOneAndDelete({
+            _id: id,
+            userId: req.user.userId,
+        });
 
         if (!poster) {
             return res.status(404).json({
@@ -335,7 +364,7 @@ app.post("/auth/login", async (req, res) => {
                 userId: user._id,
                 email: user.email,
             },
-            "secretkey",
+            JWT_SECRET,
             {
                 expiresIn: "1d",
             }

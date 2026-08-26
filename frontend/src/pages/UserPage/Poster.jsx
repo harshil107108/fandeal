@@ -41,6 +41,11 @@ const Poster = () => {
                 "http://localhost:8080/poster/delete",
                 {
                     id: posterData._id,
+                },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    },
                 }
             );
 
@@ -71,7 +76,7 @@ const Poster = () => {
         );
     }
 
-    
+
     if (!posterData) {
         return (
             <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -119,7 +124,7 @@ const Poster = () => {
 
             <div className="max-w-6xl mx-auto">
 
-               
+
                 <div
                     className="
                         relative
@@ -147,7 +152,7 @@ const Poster = () => {
                         "
                     />
 
-                   
+
                     <div
                         className={`
                             absolute
@@ -172,7 +177,7 @@ const Poster = () => {
                         {posterData.status}
                     </div>
 
-                    
+
                     {posterData.items?.map((item) => {
 
                         const product = item.productId;

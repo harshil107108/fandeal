@@ -47,7 +47,7 @@ const Signup = () => {
                     </p>
                 </div>
 
-                <form className="space-y-5">
+                <form className="space-y-5" onSubmit={hanldeCreateAccount}>
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -82,7 +82,6 @@ const Signup = () => {
                     </div>
 
                     <button
-                        onClick={hanldeCreateAccount}
                         type="submit"
                         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                     >

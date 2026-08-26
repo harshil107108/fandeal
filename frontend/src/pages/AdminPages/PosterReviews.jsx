@@ -2,8 +2,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import bg from "../../assets/bg.jpg";
 
+
+
 const PosterReviews = () => {
     const [posterData, setPosterData] = useState([]);
+
 
     const getPosterData = async () => {
         try {
