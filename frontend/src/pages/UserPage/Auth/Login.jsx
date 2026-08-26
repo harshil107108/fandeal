@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
 const Login = () => {
@@ -6,10 +6,12 @@ const Login = () => {
         email: "",
         password: "",
     });
+    const [errorMessage, setErrorMessage] = useState("");
 
     const navigate = useNavigate();
 
     const handleChange = (e) => {
+        setErrorMessage("");
         setData({
             ...data,
             [e.target.name]: e.target.value,
@@ -18,6 +20,7 @@ const Login = () => {
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        setErrorMessage("");
 
         try {
             const response = await axios.post(
@@ -39,6 +42,9 @@ const Login = () => {
 
 
         } catch (error) {
+            setErrorMessage(
+                error.response?.data?.message || "Unable to login. Please try again."
+            );
             console.error(
                 "Login Error:",
                 error.response?.data?.message || error.message
@@ -62,9 +68,7 @@ const Login = () => {
                     </p>
                 </div>
 
-                <form
-                    className="space-y-5"
-                >
+                <form className="space-y-5" onSubmit={handleLogin}>
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -98,8 +102,13 @@ const Login = () => {
                         />
                     </div>
 
+                    {errorMessage && (
+                        <p className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600" role="alert">
+                            {errorMessage}
+                        </p>
+                    )}
+
                     <button
-                        onClick={handleLogin}
                         type="submit"
                         className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition"
                     >

@@ -92,14 +92,15 @@ const Signup = () => {
 
 
                 </form>
-
-                <p className="text-center text-sm text-gray-500 mt-6">
+                <div
+                    onClick={() => navigate("/login")}
+                    className="text-center text-sm text-gray-500 mt-6"
+                >
                     Already have an account?{" "}
                     <span className="text-blue-600 font-semibold cursor-pointer hover:underline">
                         Login
                     </span>
-                </p>
-
+                </div>
 
             </div>
         </div>
