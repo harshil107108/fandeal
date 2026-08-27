@@ -1,4 +1,5 @@
 const express = require('express');
+require("dotenv").config();
 const app = express();
 const cors = require('cors');
 const mongoose = require("mongoose");
@@ -9,6 +10,7 @@ const upload = require("./config/multer");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "secretkey";
+const port = process.env.PORT;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -164,16 +166,7 @@ app.put("/poster/updateStatus", async (req, res) => {
             });
         }
 
-        const poster = await PosterModal.findByIdAndUpdate(
-            id,
-            {
-                status: status,
-                isLocked: status === "approved",
-            },
-            {
-                new: true,
-            }
-        );
+        const poster = await PosterModal.findByIdAndUpdate(id, { status: status, }, { new: true, });
 
         if (!poster) {
             return res.status(404).json({
@@ -214,6 +207,17 @@ app.post("/poster/addEdit", requireAuth, async (req, res) => {
             isLocked: isLocked || false,
             createdAt: createdAt || new Date(),
         };
+
+        const existingPoster = await PosterModal.findOne({
+            userId: req.user.userId,
+        });
+
+        if (existingPoster) {
+            return res.status(409).json({
+                success: false,
+                message: "One poster is already available. Delete it before adding another.",
+            });
+        }
 
         const poster = await PosterModal.create(posterData);
 
