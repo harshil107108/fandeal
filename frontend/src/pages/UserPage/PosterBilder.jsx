@@ -7,9 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder }) => {
     const [posterItems, setPosterItems] = useState([]);
-
-    console.log(selectedProducts)
-    console.log(posterItems)
+    const [saveError, setSaveError] = useState("");
 
     const navigate = useNavigate();
 
@@ -63,6 +61,8 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
     };
 
     const handleSave = async () => {
+        setSaveError("");
+
         try {
             const posterData = {
                 items: posterItems.map((product) => ({
@@ -92,6 +92,10 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
 
         } catch (error) {
             console.error("Save Poster Error:", error);
+            setSaveError(
+                error.response?.data?.message ||
+                "Unable to save poster. Please try again."
+            );
         }
     };
 
@@ -236,6 +240,12 @@ const PosterBilder = ({ selectedProducts, setSelectedProducts, setShowBuilder })
                     })}
                 </div>
             </div>
+
+            {saveError && (
+                <p className="mt-4 rounded-lg bg-red-100 px-4 py-3 text-red-700">
+                    {saveError}
+                </p>
+            )}
 
             <div className="flex justify-end mt-6">
                 <button

@@ -28,7 +28,6 @@ const AddProducts = () => {
                 formData
             );
 
-            console.log(response.data);
 
             setData({
                 name: "",
@@ -37,7 +36,6 @@ const AddProducts = () => {
                 price: "",
             });
 
-            // Clear preview
             setImagePreview(null);
 
         } catch (error) {
@@ -58,19 +56,16 @@ const AddProducts = () => {
         });
     };
 
-    // Image change
     const handleImageChange = (e) => {
         const file = e.target.files[0];
 
         if (!file) return;
 
-        // Store actual file
         setData({
             ...data,
             imageUrl: file,
         });
 
-        // Create preview
         const previewUrl = URL.createObjectURL(file);
         setImagePreview(previewUrl);
     };
@@ -87,7 +82,6 @@ const AddProducts = () => {
                 p-8
             ">
 
-                {/* Heading */}
                 <div className="mb-8">
 
                     <h1 className="text-3xl font-bold text-gray-900">
@@ -105,7 +99,6 @@ const AddProducts = () => {
                     className="space-y-6"
                 >
 
-                    {/* Product Name */}
                     <div>
 
                         <label className="
@@ -139,9 +132,7 @@ const AddProducts = () => {
 
                     </div>
 
-                    {/* Category */}
                     <div>
-
                         <label className="
                             block
                             text-sm
@@ -170,7 +161,6 @@ const AddProducts = () => {
 
                     </div>
 
-                    {/* Image */}
                     <div>
 
                         <label className="
